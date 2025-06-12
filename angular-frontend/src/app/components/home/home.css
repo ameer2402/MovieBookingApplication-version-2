@@ -1,0 +1,210 @@
+.home-page-container {
+  max-width: 100%; /* Full width for carousel */
+  margin: 0 auto;
+  padding: 0 0 20px 0; /* No side padding for full-width sections */
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background-color: #f0f2f5; /* Light grey background */
+}
+
+.loading-fullpage, .error-fullpage {
+  text-align: center;
+  padding: 60px 20px;
+  font-size: 1.2rem;
+  color: #555;
+}
+.alert-danger { /* Basic bootstrap-like alert */
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+    padding: 1rem;
+    border-radius: .25rem;
+}
+
+
+.section-title, .category-title {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #333;
+  margin: 30px 20px 15px 20px; /* Add side margin for titles */
+  padding-bottom: 5px;
+  border-bottom: 2px solid #007bff;
+  display: inline-block;
+}
+
+/* Featured Events Carousel (Basic CSS Carousel) */
+.featured-events-carousel {
+  background-color: #fff; /* White background for the carousel section */
+  padding-bottom: 20px;
+  margin-bottom: 30px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.carousel-wrapper {
+  position: relative;
+  max-width: 1200px; /* Max width for carousel content */
+  margin: 0 auto;
+  overflow: hidden; /* Important for hiding non-active items */
+}
+
+.carousel-inner {
+  display: flex; /* Allows items to sit side-by-side */
+  transition: transform 0.5s ease-in-out; /* Smooth slide */
+  height: 400px; /* Adjust as needed */
+}
+
+.carousel-item {
+  min-width: 100%; /* Each item takes full width of .carousel-inner */
+  box-sizing: border-box;
+  position: relative;
+  cursor: pointer;
+  display: none; /* Hide all items by default */
+}
+.carousel-item.active {
+  display: block; /* Show only the active item */
+}
+
+
+.carousel-event-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Cover the area, might crop */
+  border-radius: 4px; /* Optional */
+}
+
+.carousel-caption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%);
+  color: white;
+  padding: 40px 20px 20px 20px;
+  text-align: left;
+}
+.carousel-caption h3 {
+  margin: 0 0 5px 0;
+  font-size: 1.6rem;
+  font-weight: bold;
+}
+.carousel-caption p {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.carousel-control {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(0, 0, 0, 0.4);
+  color: white;
+  border: none;
+  font-size: 2rem;
+  padding: 10px 15px;
+  cursor: pointer;
+  z-index: 10;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.carousel-control:hover {
+  background-color: rgba(0, 0, 0, 0.7);
+}
+.carousel-control.prev { left: 15px; }
+.carousel-control.next { right: 15px; }
+
+.no-featured, .no-events-in-category, .no-events-overall {
+    text-align: center;
+    padding: 20px;
+    color: #666;
+    font-size: 1.1rem;
+}
+.no-events-overall {
+    padding: 50px 20px;
+}
+.empty-state-image {
+    max-width: 200px;
+    margin-bottom: 20px;
+    opacity: 0.7;
+}
+
+
+/* Category Events Section */
+.category-events-section {
+  padding: 0 20px; /* Side padding for category rows */
+}
+
+.category-row {
+  margin-bottom: 30px;
+}
+
+.horizontal-scroll-wrapper {
+  display: flex;
+  overflow-x: auto;
+  padding: 10px 0 20px 0; /* Padding for scrollbar and bottom space */
+  gap: 15px; /* Space between cards */
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+}
+/* Hide scrollbar for a cleaner look (optional) */
+.horizontal-scroll-wrapper::-webkit-scrollbar { display: none; }
+.horizontal-scroll-wrapper { -ms-overflow-style: none; scrollbar-width: none; }
+
+
+.event-card-lite {
+  flex: 0 0 auto; /* Prevent shrinking/growing, auto width */
+  width: 220px; /* Width of each card */
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+}
+.event-card-lite:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+.event-card-lite-image {
+  width: 100%;
+  height: 150px; /* Fixed height for image */
+  object-fit: cover;
+}
+
+.event-card-lite-content {
+  padding: 15px;
+}
+
+.event-card-lite-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 5px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; /* Add ellipsis for long titles */
+}
+
+.event-card-lite-venue, .event-card-lite-price {
+  font-size: 0.85rem;
+  color: #666;
+  margin: 3px 0;
+}
+.event-card-lite-price {
+  font-weight: bold;
+  color: #007bff;
+}
+
+@media (max-width: 768px) {
+  .carousel-inner { height: 300px; }
+  .carousel-caption h3 { font-size: 1.3rem; }
+  .carousel-caption p { font-size: 0.9rem; }
+  .carousel-control { font-size: 1.5rem; width: 40px; height: 40px; }
+
+  .section-title, .category-title { font-size: 1.5rem; margin: 20px 15px 10px 15px; }
+  .category-events-section { padding: 0 15px; }
+  .event-card-lite { width: 180px; }
+  .event-card-lite-image { height: 120px; }
+}

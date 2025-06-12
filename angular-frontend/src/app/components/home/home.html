@@ -1,0 +1,63 @@
+<div class="home-page-container">
+  <!-- Loading and Error States -->
+  <div *ngIf="isLoading" class="loading-fullpage">
+    <p>Loading awesome events...</p>
+    <!-- Add a nice spinner here -->
+  </div>
+  <div *ngIf="errorMessage && !isLoading" class="error-fullpage alert alert-danger">
+    {{ errorMessage }}
+  </div>
+
+  <ng-container *ngIf="!isLoading && !errorMessage">
+    <!-- Featured Events Carousel -->
+    <section class="featured-events-carousel" *ngIf="featuredEvents.length > 0">
+      <h2 class="section-title">Featured Events</h2>
+      <div class="carousel-wrapper">
+        <button class="carousel-control prev" (click)="prevFeatured()" *ngIf="featuredEvents.length > 1">❮</button>
+        <div class="carousel-inner">
+          <div class="carousel-item"
+               *ngFor="let event of featuredEvents; let i = index"
+               [class.active]="i === currentFeaturedIndex"
+               (click)="handleEventClick(event.id)">
+            <img [src]="event.imageUrl" [alt]="event.title" class="carousel-event-image">
+            <div class="carousel-caption">
+              <h3>{{ event.title }}</h3>
+              <p>{{ event.venue }}</p>
+            </div>
+          </div>
+        </div>
+        <button class="carousel-control next" (click)="nextFeatured()" *ngIf="featuredEvents.length > 1">❯</button>
+      </div>
+    </section>
+    <div *ngIf="featuredEvents.length === 0 && allEvents.length > 0" class="no-featured">
+      <p>No featured events right now, but check out other categories!</p>
+    </div>
+
+    <!-- Events by Category - Horizontal Scroll -->
+    <section class="category-events-section" *ngIf="eventsByCategory.length > 0">
+      <div *ngFor="let categoryGroup of eventsByCategory" class="category-row">
+        <h3 class="category-title">{{ categoryGroup.category | titlecase }}</h3>
+        <div class="horizontal-scroll-wrapper">
+          <div class="event-card-lite" *ngFor="let event of categoryGroup.events" (click)="handleEventClick(event.id)">
+            <img [src]="event.imageUrl" [alt]="event.title" class="event-card-lite-image">
+            <div class="event-card-lite-content">
+              <h4 class="event-card-lite-title">{{ event.title }}</h4>
+              <p class="event-card-lite-venue">{{ event.venue }}</p>
+              <p class="event-card-lite-price">₹{{ event.ticketPrice | number:'1.2-2' }}</p>
+            </div>
+          </div>
+          <div *ngIf="categoryGroup.events.length === 0" class="no-events-in-category">
+            <p>No events currently in {{ categoryGroup.category | titlecase }}.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div *ngIf="allEvents.length === 0 && !isLoading" class="no-events-overall">
+      <img src="assets/images/empty-state.svg" alt="No events found" class="empty-state-image"/> <!-- Add an image -->
+      <h2>No Events Available Right Now</h2>
+      <p>We're working on bringing you exciting events. Please check back soon!</p>
+    </div>
+
+  </ng-container>
+</div>

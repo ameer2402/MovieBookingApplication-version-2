@@ -1,0 +1,93 @@
+<nav class="navbar">
+    <div class="navbar-container">
+        <div class="site-branding">
+            <a routerLink="/" class="navbar-title-link" (click)="closeMenu()">
+                <img src="assets/images/popcorn.png" alt="App Logo" class="app-logo">
+                <h1 class="site-title">MyShowPal</h1>
+            </a>
+        </div>
+
+        <!-- Search Bar - More prominent on desktop -->
+        <div class="search-container desktop-search">
+            <input type="text" placeholder="Search for movies, events..." 
+                   [(ngModel)]="searchTerm" 
+                   (keyup.enter)="performSearch()">
+            <button class="search-button" (click)="performSearch()">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+
+        <button class="menu-toggle" (click)="toggleMenu()" [class.active]="isMenuOpen">
+            <div class="bar1"></div>
+            <div class="bar2"></div>
+            <div class="bar3"></div>
+        </button>
+
+        <ul class="nav-links" [class.active]="isMenuOpen">
+            <!-- Search Bar - For Mobile -->
+            <li class="mobile-search-item">
+                <div class="search-container mobile-search">
+                    <input type="text" placeholder="Search events..." 
+                           [(ngModel)]="searchTerm" 
+                           (keyup.enter)="performSearch()">
+                    <button class="search-button" (click)="performSearch()">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </li>
+
+            <ng-container *ngIf="!isLoggedIn">
+                <li><a routerLink="/register" class="btn btn-nav-action" (click)="closeMenu()">Register</a></li>
+                <li><a routerLink="/login" class="btn btn-nav-action primary" (click)="closeMenu()">Login</a></li>
+            </ng-container>
+
+            <ng-container *ngIf="isLoggedIn">
+                <li><a routerLink="/" class="nav-link-plain" (click)="closeMenu()">Home</a></li>
+
+                <ng-container *ngIf="userRole === 'ADMIN'">
+                    <app-admin-nav (click)="closeMenu()"></app-admin-nav>
+                </ng-container>
+                <ng-container *ngIf="userRole === 'USER'">
+                    <app-user-nav (click)="closeMenu()"></app-user-nav>
+                </ng-container>
+
+                <li class="profile-dropdown-container">
+                    <button class="profile-button nav-link-plain" (click)="toggleProfileDropdown($event)">
+                        <i class="fas fa-user-circle profile-icon"></i>
+                        <span class="profile-button-text">{{ username || 'Profile' }}</span>
+                        <i class="fas fa-caret-down dropdown-arrow"></i>
+                    </button>
+                    <div class="dropdown-content" *ngIf="isProfileDropdownOpen">
+                        <div class="dropdown-user-info">
+                            <span class="dropdown-username">{{ username }}</span>
+                            <span class="dropdown-role">Role: {{ userRole }}</span>
+                        </div>
+                        <a (click)="navigateAndCloseMenus('/profile-details')" class="dropdown-item">
+                            <i class="fas fa-id-card"></i> My Profile
+                        </a>
+                        <button (click)="showLogoutPopup = true; closeProfileDropdown()" class="dropdown-item logout-dropdown-btn">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </button>
+                    </div>
+                </li>
+            </ng-container>
+        </ul>
+    </div>
+
+    <!-- Location Placeholder - could be a modal trigger -->
+    <!-- <div class="location-banner" *ngIf="!userLocationSet">
+        <p>Enhance your experience by setting your location!</p>
+        <button (click)="promptLocation()">Set Location</button>
+    </div> -->
+
+    <div *ngIf="showLogoutPopup" class="logout-popup-overlay">
+        <div class="logout-popup-content">
+            <h3>Confirm Logout</h3>
+            <p>Are you sure you want to logout?</p>
+            <div class="popup-actions">
+                <button (click)="logout()" class="btn confirm-btn">Yes, Logout</button>
+                <button (click)="showLogoutPopup = false" class="btn cancel-btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+</nav>

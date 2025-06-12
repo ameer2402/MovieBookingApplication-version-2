@@ -1,0 +1,41 @@
+<div class="container event-listing-container">
+    <header class="page-header">
+        <h1>Available Events</h1>
+        <!-- Optional: Add filters or search here -->
+    </header>
+
+    <div *ngIf="isLoading" class="loading-indicator">
+        <p>Loading events...</p>
+    </div>
+
+    <div *ngIf="errorMessage && !isLoading" class="error-message alert alert-danger">
+        {{ errorMessage }}
+    </div>
+
+    <div *ngIf="!isLoading && events.length === 0 && !errorMessage" class="no-events-message">
+        <p>No events currently available. Please check back later!</p>
+    </div>
+
+    <div class="events-grid" *ngIf="!isLoading && events.length > 0">
+        <div *ngFor="let event of events" class="event-card">
+            <div class="event-image-container">
+                <img [src]="event.imageUrl || 'https://via.placeholder.com/400x250?text=' + event.title"
+                    [alt]="event.title" class="event-image">
+            </div>
+            <div class="event-card-content">
+                <h2 class="event-title">{{ event.title }}</h2>
+                <div class="event-details">
+                    <p><i class="fas fa-film"></i> <strong>Category:</strong> {{ event.category }}</p>
+                    <p><i class="fas fa-clock"></i> <strong>Duration:</strong> {{ event.duration }} mins</p>
+                    <p><i class="fas fa-map-marker-alt"></i> <strong>Venue:</strong> {{ event.venue }}</p>
+                    <p><i class="fas fa-dollar-sign"></i> <strong>Price:</strong> ₹{{ event.ticketPrice | number:'1.2-2' }}</p>
+                </div>
+                <div class="event-actions">
+                    <button class="btn btn-book-now" (click)="navigateToBooking(event.id)">
+                        <i class="fas fa-ticket-alt"></i> Book Now
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

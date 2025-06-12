@@ -1,0 +1,147 @@
+<div class="booking-page-container">
+    <div *ngIf="isLoading && !event" class="loading-fullpage">
+      <p>Loading event details...</p> <!-- Add spinner -->
+    </div>
+  
+    <div *ngIf="errorMessage && !event" class="error-fullpage alert alert-danger">
+      {{ errorMessage }}
+      <button routerLink="/user/view/events" class="btn btn-secondary mt-3">Back to Events</button>
+    </div>
+  
+    <ng-container *ngIf="event && !isLoading">
+      <!-- Event Info Header -->
+      <header class="event-info-header">
+        <h1>{{ event.title }}</h1>
+        <div class="event-meta">
+          <span><i class="fas fa-calendar-alt"></i> Date & Time (TBD)</span> <!-- Add actual date/time if available -->
+          <span><i class="fas fa-map-marker-alt"></i> {{ event.venue }}</span>
+          <span><i class="fas fa-dollar-sign"></i> ₹{{ event.ticketPrice | number:'1.2-2' }} per seat</span>
+        </div>
+      </header>
+  
+      <!-- Step: Seat Selection -->
+      <section *ngIf="currentStep === 'selection'" class="booking-step seat-selection-step">
+        <h2>1. Select Your Seats</h2>
+        <div class="quantity-controls">
+          <label for="quantity">Number of Seats:</label>
+          <div class="input-group">
+            <button (click)="decrementQuantity()" [disabled]="quantityToSelect <= 1" class="btn btn-outline-secondary">-</button>
+            <input type="number" id="quantity" class="form-control quantity-input" [(ngModel)]="quantityToSelect" readonly>
+            <button (click)="incrementQuantity()" [disabled]="quantityToSelect >= maxQuantity" class="btn btn-outline-secondary">+</button>
+          </div>
+          <small class="form-text text-muted ms-2">Max {{ maxQuantity }} seats per booking.</small>
+        </div>
+  
+        <div class="seating-chart-container">
+          <div class="screen-indicator">SCREEN THIS WAY</div>
+          <div class="seats-grid">
+            <div *ngFor="let row of displaySeats; let rowIndex = index" class="seat-row">
+              <span class="row-label">{{ String.fromCharCode(65 + rowIndex) }}</span>
+              <div *ngFor="let seat of row" class="seat"
+                   [ngClass]="{
+                       'available': seat.visualStatus === 'available',
+                       'booked': seat.visualStatus === 'booked',
+                       'reserved': seat.visualStatus === 'reserved',
+                       'blocked': seat.visualStatus === 'blocked',
+                       'selected-by-user': seat.visualStatus === 'selected-by-user'
+                   }"
+                   (click)="handleSeatClick(seat)"
+                   [title]="seat.id + ' - ' + seat.status">
+                {{ seat.id.substring(1) }} <!-- Display seat number -->
+              </div>
+            </div>
+          </div>
+          <div class="seat-legend">
+            <div class="legend-item"><span class="seat-example available"></span> Available</div>
+            <div class="legend-item"><span class="seat-example selected-by-user"></span> Your Selection</div>
+            <div class="legend-item"><span class="seat-example booked"></span> Booked</div>
+            <div class="legend-item"><span class="seat-example reserved"></span> Reserved</div>
+          </div>
+        </div>
+  
+        <div class="booking-summary-partial">
+          <p>Seats Selected: <strong>{{ selectedSeatNames.length }} / {{ quantityToSelect }}</strong></p>
+          <p>Total Cost: <strong>₹{{ totalCost | number:'1.2-2' }}</strong></p>
+          <button (click)="clearAllSelections()" class="btn btn-sm btn-outline-danger" *ngIf="selectedSeatNames.length > 0">Clear Selection</button>
+        </div>
+  
+        <button class="btn btn-primary btn-lg" (click)="proceedToPayment()" 
+                [disabled]="selectedSeatNames.length !== quantityToSelect || selectedSeatNames.length === 0">
+          Proceed to Payment <i class="fas fa-arrow-right"></i>
+        </button>
+      </section>
+  
+      <!-- Step: Payment -->
+      <section *ngIf="currentStep === 'payment'" class="booking-step payment-step">
+        <h2>2. Payment Details</h2>
+        <div class="payment-summary">
+           <h4>Order Summary</h4>
+           <p>Event: {{ event.title }}</p>
+           <p>Seats: {{ selectedSeatNames.join(', ') }} ({{ selectedSeatNames.length }} seat{{ selectedSeatNames.length > 1 ? 's' : '' }})</p>
+           <p>Total Amount: <strong>₹{{ totalCost | number:'1.2-2' }}</strong></p>
+        </div>
+  
+        <form #paymentForm="ngForm" (ngSubmit)="submitPayment(paymentForm)" class="payment-form">
+          <div class="form-group">
+            <label for="cardNumber">Card Number</label>
+            <input type="text" id="cardNumber" name="cardNumber" class="form-control" 
+                   [(ngModel)]="paymentDetails.cardNumber" required pattern="\d{16}" placeholder="•••• •••• •••• ••••">
+             <small *ngIf="paymentForm.controls['cardNumber']?.errors?.['pattern'] && paymentForm.controls['cardNumber']?.touched" class="text-danger">Enter a valid 16-digit card number.</small>
+          </div>
+          <div class="form-row">
+               <div class="form-group half-width">
+                   <label for="expiryDate">Expiry Date (MM/YY)</label>
+                   <input type="text" id="expiryDate" name="expiryDate" class="form-control" 
+                          [(ngModel)]="paymentDetails.expiryDate" required pattern="(0[1-9]|1[0-2])\/\d{2}" placeholder="MM/YY">
+                   <small *ngIf="paymentForm.controls['expiryDate']?.errors?.['pattern'] && paymentForm.controls['expiryDate']?.touched" class="text-danger">Enter valid MM/YY.</small>
+               </div>
+               <div class="form-group half-width">
+                   <label for="cvv">CVV</label>
+                   <input type="text" id="cvv" name="cvv" class="form-control" 
+                          [(ngModel)]="paymentDetails.cvv" required pattern="\d{3,4}" placeholder="•••">
+                   <small *ngIf="paymentForm.controls['cvv']?.errors?.['pattern'] && paymentForm.controls['cvv']?.touched" class="text-danger">Enter a valid CVV.</small>
+               </div>
+          </div>
+          
+          <div *ngIf="bookingError" class="alert alert-danger mt-3">
+            {{ bookingError }}
+          </div>
+  
+          <div class="payment-actions">
+            <button type="button" class="btn btn-secondary" (click)="goBackToSelection()">
+               <i class="fas fa-arrow-left"></i> Back to Seat Selection
+            </button>
+            <button type="submit" class="btn btn-success btn-lg" [disabled]="!paymentForm.valid || isLoading">
+              <span *ngIf="isLoading"><i class="fas fa-spinner fa-spin"></i> Processing...</span>
+              <span *ngIf="!isLoading">Pay ₹{{ totalCost | number:'1.2-2' }}</span>
+            </button>
+          </div>
+          <p class="text-muted mt-3"><i class="fas fa-lock"></i> This is a dummy payment form. No real transaction will occur.</p>
+        </form>
+      </section>
+  
+      <!-- Step: Confirmation -->
+      <section *ngIf="currentStep === 'confirmation'" class="booking-step confirmation-step">
+        <div *ngIf="isLoading" class="loading-fullpage"><p>Confirming booking...</p></div>
+        
+        <div *ngIf="!isLoading && bookingResponse && !bookingError" class="alert alert-success booking-success-message">
+          <h3><i class="fas fa-check-circle"></i> Booking Confirmed!</h3>
+          <p>Your booking for <strong>{{ event.title }}</strong> is successful.</p>
+          <p>Booking ID: <strong>{{ bookingResponse.id }}</strong></p>
+          <p>Seats: <strong>{{ bookingResponse.bookedSeatNumbers?.join(', ') }}</strong></p>
+          <p>Total Paid: <strong>₹{{ bookingResponse.totalCost | number:'1.2-2' }}</strong></p>
+          <button class="btn btn-primary mt-3" (click)="navigateToMyBookings()">
+            View My Bookings
+          </button>
+        </div>
+  
+        <div *ngIf="!isLoading && bookingError" class="alert alert-danger booking-error-message">
+          <h3><i class="fas fa-times-circle"></i> Booking Failed</h3>
+          <p>{{ bookingError }}</p>
+          <button class="btn btn-warning mt-3" (click)="goBackToSelection()">
+            Try Again
+          </button>
+        </div>
+      </section>
+    </ng-container>
+  </div>

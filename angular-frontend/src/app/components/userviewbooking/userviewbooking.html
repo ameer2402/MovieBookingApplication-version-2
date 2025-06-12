@@ -1,0 +1,39 @@
+<div class="user-bookings-container">
+  <header class="page-header">
+    <h1>My Bookings</h1>
+  </header>
+
+  <div *ngIf="isLoading" class="loading-indicator">
+    <p>Loading your bookings...</p>
+    <!-- You can add a spinner here -->
+  </div>
+
+  <div *ngIf="errorMessage && !isLoading" class="info-message error-message">
+    <i class="fas fa-exclamation-circle"></i> {{ errorMessage }}
+  </div>
+
+  <div *ngIf="!isLoading && userBookings.length === 0 && !errorMessage" class="info-message no-bookings-message">
+    <i class="fas fa-ticket-alt"></i>
+    <p>You haven't made any bookings yet.</p>
+    <a routerLink="/user/view/events" class="btn btn-primary">Explore Events</a>
+  </div>
+
+  <div class="bookings-grid" *ngIf="!isLoading && userBookings.length > 0">
+    <div *ngFor="let booking of userBookings" class="booking-card">
+      <div class="card-header">
+        <h3>{{ booking.title || 'Event Title N/A' }}</h3>
+        <span class="booking-id">Booking ID: {{ booking.bookingId || 'N/A' }}</span>
+      </div>
+      <div class="card-content">
+        <p><i class="fas fa-map-marker-alt"></i> <strong>Venue:</strong> {{ booking.venue || 'N/A' }}</p>
+        <p><i class="fas fa-calendar-alt"></i> <strong>Date & Time:</strong> {{ formatDateTime(booking.eventDateTime) }}</p>
+        <p><i class="fas fa-couch"></i> <strong>Seats:</strong> {{ booking.selectedSeats?.join(', ') || 'N/A' }} ({{ booking.selectedSeats?.length || 0 }} seat{{ (booking.selectedSeats?.length || 0) !== 1 ? 's' : '' }})</p>
+        <p class="total-cost"><i class="fas fa-dollar-sign"></i> <strong>Total Cost:</strong> ₹{{ booking.totalCost | number:'1.2-2' }}</p>
+      </div>
+      <!-- <div class="card-actions">
+        Optional: Add actions like "View E-Ticket", "Cancel Booking" (if applicable)
+        <button class="btn btn-sm btn-outline-primary">View E-Ticket</button>
+      </div> -->
+    </div>
+  </div>
+</div>

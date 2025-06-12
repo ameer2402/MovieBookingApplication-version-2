@@ -1,0 +1,64 @@
+<div class="register-container">
+    <form #registerForm="ngForm" (ngSubmit)="register(registerForm)" class="register-form">
+        <h2>User Registration</h2>
+
+        <div class="form-group">
+            <label for="username">Username <span class="required-asterisk">*</span></label>
+            <input type="text" id="username" name="username" ngModel required #username="ngModel" class="form-control">
+            <div *ngIf="username.invalid && (username.dirty || username.touched)" class="error-message">
+                <div *ngIf="username.hasError('required')">Username is required.</div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email <span class="required-asterisk">*</span></label>
+            <input type="email" id="email" name="email" ngModel required email #email="ngModel" class="form-control">
+            <div *ngIf="email.invalid && (email.dirty || email.touched)" class="error-message">
+                <div *ngIf="email.hasError('required')">Email is required.</div>
+                <div *ngIf="email.hasError('email')">Please enter a valid email address.</div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="password">Password <span class="required-asterisk">*</span></label>
+            <input type="password" id="password" name="password" ngModel required #password="ngModel"
+                pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$" class="form-control">
+            <div *ngIf="password.invalid && (password.dirty || password.touched)" class="error-message">
+                <div *ngIf="password.hasError('required')">Password is required.</div>
+                <div *ngIf="password.hasError('pattern')" class="password-pattern-error">
+                    Password must have: minimum 8 characters, at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character ($!%*?&).
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="confirmPassword">Confirm Password <span class="required-asterisk">*</span></label>
+            <input type="password" id="confirmPassword" name="confirmPassword" ngModel required #confirmPassword="ngModel" class="form-control">
+            <div *ngIf="confirmPassword.touched && password.value !== confirmPassword.value" class="error-message">
+                Passwords do not match.
+            </div>
+            <div *ngIf="confirmPassword.invalid && (confirmPassword.dirty || confirmPassword.touched) && confirmPassword.hasError('required')" class="error-message">
+                Confirming password is required.
+            </div>
+        </div>
+
+        <!-- Mobile Number and Role fields removed -->
+
+        <div *ngIf="errorMessage" class="error-message server-error">
+            {{ errorMessage }}
+        </div>
+
+        <div *ngIf="successMessage" class="success-message">
+            {{ successMessage }}
+        </div>
+
+        <button type="submit" [disabled]="registerForm.invalid || (password.value !== confirmPassword.value && confirmPassword.touched)" class="btn btn-red">
+            Register
+        </button>
+
+        <p class="login-text">
+            Already have an account?
+            <a routerLink="/login" class="login-link">Login here</a>
+        </p>
+    </form>
+</div>

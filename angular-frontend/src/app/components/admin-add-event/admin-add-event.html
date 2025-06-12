@@ -1,0 +1,75 @@
+<div class="container modern-form-container">
+    <div class="form-card">
+      <h2 class="form-title">{{ isEditing ? 'Edit Event' : 'Add New Event' }}</h2>
+      
+      <form (ngSubmit)="addOrUpdateEvent()" #eventForm="ngForm">
+        <div class="form-group">
+          <label for="title">Event Title <span class="required-asterisk">*</span></label>
+          <input type="text" id="title" name="title" [(ngModel)]="eventFormData.title" required class="form-control">
+        </div>
+        
+        <div class="form-group">
+          <label for="duration">Duration (minutes) <span class="required-asterisk">*</span></label>
+          <input type="number" id="duration" name="duration" [(ngModel)]="eventFormData.duration" required class="form-control" min="1">
+        </div>
+  
+        <div class="form-group">
+          <label for="venue">Venue <span class="required-asterisk">*</span></label>
+          <input type="text" id="venue" name="venue" [(ngModel)]="eventFormData.venue" required class="form-control">
+        </div>
+  
+        <div class="form-group">
+          <label for="category">Category <span class="required-asterisk">*</span></label>
+          <select id="category" name="category" [(ngModel)]="eventFormData.category" required class="form-control">
+            <option [ngValue]="null" disabled>Select a category</option>
+            <option *ngFor="let cat of eventCategories" [ngValue]="cat">{{ cat }}</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="ticketPrice">Ticket Price (₹) <span class="required-asterisk">*</span></label>
+          <input type="number" id="ticketPrice" name="ticketPrice" [(ngModel)]="eventFormData.ticketPrice" required class="form-control" min="0">
+        </div>
+  
+        <div class="form-row">
+          <div class="form-group half-width">
+            <label for="rows">Number of Rows <span class="required-asterisk">*</span></label>
+            <input type="number" id="rows" name="rows" [(ngModel)]="eventFormData.rows" required class="form-control" min="1">
+          </div>
+          
+          <div class="form-group half-width">
+            <label for="seatsPerRow">Seats Per Row <span class="required-asterisk">*</span></label>
+            <input type="number" id="seatsPerRow" name="seatsPerRow" [(ngModel)]="eventFormData.seatsPerRow" required class="form-control" min="1">
+          </div>
+        </div>
+
+        <div class="form-group">
+            <label for="eventDateTime">Event Date and Time <span class="required-asterisk">*</span></label>
+            <input type="datetime-local" id="eventDateTime" name="eventDateTime" [(ngModel)]="eventFormData.eventDateTime" required class="form-control">
+        </div>
+
+        <div class="form-group">
+            <label for="imageUrl">Image URL</label>
+            <input type="url" id="imageUrl" name="imageUrl" [(ngModel)]="eventFormData.imageUrl" class="form-control" placeholder="https://example.com/image.jpg">
+        </div>
+
+        <div class="form-group">
+            <label for="description">Description</label>
+            <textarea id="description" name="description" [(ngModel)]="eventFormData.description" class="form-control" rows="3"></textarea>
+        </div>
+        
+        <div *ngIf="errorMessage" class="error-message">
+          {{ errorMessage }}
+        </div>
+        
+        <div class="form-actions">
+          <button type="submit" [disabled]="!eventForm.form.valid" class="btn btn-primary">
+            {{ isEditing ? 'Update Event' : 'Add Event' }}
+          </button>
+          <button type="button" class="btn btn-secondary" (click)="cancelOperation()">
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>

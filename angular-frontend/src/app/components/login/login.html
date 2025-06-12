@@ -1,0 +1,33 @@
+<div class="login-container">
+    <form #loginForm="ngForm" (ngSubmit)="login(loginForm)" class="login-form"> <h2>Login</h2>
+        <div class="form-group">
+            <label for="username">Username</label> <!-- CHANGE LABEL -->
+            <input type="text" id="username" name="username" [(ngModel)]="loginModel.username" required #username="ngModel"> <!-- CHANGE id, name, ngModel binding -->
+            <div *ngIf="username.invalid && (username.dirty || username.touched)" class="error-message">
+                <div *ngIf="username.hasError('required')">
+                    Username is Required.
+                </div>
+                <!-- Remove email specific validation if not needed for username -->
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" [(ngModel)]="loginModel.password" required #password="ngModel">
+            <div *ngIf="password.invalid && (password.dirty || password.touched)" class="error-message">
+                <div *ngIf="password.hasError('required')">
+                    Password is Required.
+                </div>
+            </div>
+        </div>
+        <div *ngIf="errorMessage" class="error-message server-error"> {{errorMessage}}
+        </div>
+        <button
+            type="submit"
+            [disabled]="loginForm.invalid"
+            class="btn btn-red" >
+        Login
+        </button>
+        <p class="register-text"> Don't have an Account?
+            <a routerLink="/register" class="register-link">Register here</a> </p>
+    </form>
+</div>

@@ -1,0 +1,72 @@
+
+<div class="admin-bookings-container">
+    <h1>Booking Management</h1>
+  
+    <div *ngIf="errorMessage" class="error-message">
+      {{ errorMessage }}
+    </div>
+  
+    <div class="booking-stats">
+      <div class="stat-card">
+        <h3>Total Bookings</h3>
+        <p>{{ bookings.length }}</p>
+      </div>
+      <div class="stat-card">
+        <h3>Total Revenue</h3>
+        <p>₹{{ calculateTotalRevenue() | number:'1.2-2' }}</p>
+      </div>
+    </div>
+  
+    <div class="sorting-controls">
+      <div class="sort-field-container">
+        <label for="sort-field">Sort By:</label>
+        <select 
+          id="sort-field" 
+          [(ngModel)]="selectedSortField"
+          (change)="onSortFieldChange()">
+          <option *ngFor="let option of sortOptions" [value]="option.value">
+            {{ option.label }}
+          </option>
+        </select>
+      </div>
+      
+      <div class="sort-direction-container">
+        <label>Sort Direction:</label>
+        <button 
+          class="direction-toggle-btn" 
+          (click)="toggleSortDirection()">
+          {{ sortDirection === 'asc' ? 'Ascending' : 'Descending' }}
+          <span class="sort-icon">
+            {{ sortDirection === 'asc' ? '▲' : '▼' }}
+          </span>
+        </button>
+      </div>
+    </div>
+  
+    <div *ngIf="bookings.length === 0 && !errorMessage" class="no-bookings">
+      No bookings found.
+    </div>
+  
+    <table *ngIf="bookings.length > 0" class="bookings-table">
+      <thead>
+        <tr>
+          <th>Booking ID</th>
+          <th>User</th>
+          <th>Movie</th>
+          <th>Seats</th>
+          <th>Total Cost</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let booking of bookings">
+          <td>{{ booking.id }}</td>
+          <td>{{ booking.user?.username || 'N/A' }}</td>
+          <td>{{ booking.event?.title || 'N/A' }}</td>
+          <td>{{ booking.seatCount }}</td>
+          <td>₹{{ booking.totalCost | number:'1.2-2' }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  
+  

@@ -1,0 +1,23 @@
+/* Basic styles - can extend or reuse admin-view-event.css */
+@import '../admin-view-event/admin-view-event.css'; /* If you want to reuse */
+
+.event-listing-container {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.btn-book-now {
+  background-color: #007bff;
+  color: white;
+  width: 100%; /* Make button full width of its container */
+  padding: 10px 15px;
+  font-size: 1rem;
+}
+.btn-book-now:hover {
+  background-color: #0056b3;
+}
+.btn-book-now i {
+  margin-right: 8px;
+}
+.event-actions { /* Override if necessary for user view */
+     justify-content: center; /* Center the book now button */
+}

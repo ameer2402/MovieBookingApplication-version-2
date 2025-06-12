@@ -1,0 +1,33 @@
+.sub-nav ul li a {
+    text-decoration: none;
+    color: #007bff; /* Match navbar link style or theme */
+    padding: 8px 10px; /* Consistent padding */
+    border-radius: 4px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.sub-nav ul li a:hover {
+    background-color: #f0f0f0; /* Subtle hover */
+    color: #0056b3;
+}
+
+.sub-nav ul li a.active-link {
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
+}
+
+/* If used within responsive navbar, ensure they stack correctly on mobile */
+@media (max-width: 768px) {
+   .sub-nav ul {
+       flex-direction: column; /* Stack vertically on mobile if needed */
+       width: 100%;
+   }
+   .sub-nav ul li {
+       width: 100%;
+   }
+   .sub-nav ul li a {
+       display: block; /* Make links take full width */
+       text-align: left; /* Or center, depending on design */
+   }
+}
